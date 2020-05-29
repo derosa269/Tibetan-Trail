@@ -8,6 +8,7 @@ using System.Xml.Schema;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Security.Authentication.ExtendedProtection;
+using System.IO;
 
 namespace Final_Exam
 {
@@ -244,6 +245,12 @@ namespace Final_Exam
             string person3;
             string person4;
             int people = 4;
+            int brokenwheel = 0;
+            int brokenaxle = 0;
+            int brokentongue = 0;
+            int brokensail = 0;
+            int brokenmast = 0;
+            int fooddeath = 3;
             int route = 0;
             int landmark = 0;
             double balance = 0.0;
@@ -448,6 +455,7 @@ namespace Final_Exam
                 }
             } while (rote == 0);
             #endregion
+            #region River Route
             if (route == 1)
             {
                 currentRoom = 134;
@@ -460,7 +468,7 @@ namespace Final_Exam
                 Console.WriteLine("You Will Need Yak To Pull Your Boat Across Land When Needed");
                 Console.WriteLine("You Will Need Clothes To Stay Warm Along The Trail");
                 Console.WriteLine("You Will Need Food For Energy To Travel The Trail");
-                Console.WriteLine("You Will Need Bait To Fish For More Food");
+                Console.WriteLine("You Will Need Ammo To Hunt For More Food");
                 Console.WriteLine("You Will Need Spare Parts To Fix Your Boat");
                 Console.WriteLine("Press Enter To Continue");
                 Console.ReadLine();
@@ -485,7 +493,7 @@ namespace Final_Exam
                     Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
                     Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
                     Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
-                    Console.WriteLine("4: bait.  .  .  .  .  .  .  .  .  .  {0:C}", baitcost);
+                    Console.WriteLine("4: ammo.  .  .  .  .  .  .  .  .  .  {0:C}", baitcost);
                     Console.WriteLine("5: boat parts.  .  .  .  .  .  .  .  {0:C}", partcost);
                     Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
                     Console.WriteLine("Leave: Exit Shop/Buy");
@@ -504,7 +512,7 @@ namespace Final_Exam
                     }
                     if (shopick == "4")
                     {
-                        baitcost = Bait(shopowner);
+                        baitcost = Ammo(shopowner);
                     }
                     if (shopick == "5")
                     {
@@ -625,13 +633,542 @@ namespace Final_Exam
                 yak += (Addyak(yakcost));
                 food += (Addfood(foodcost));
                 clothes += (Addclothe(clothescost));
-                bait += (Addbait(baitcost));
+                bait += (Addammo(baitcost));
                 hullpatch += (Addwheel(hullcost));
                 sailpatch += (Addaxle(sailcost));
                 mastpatch += (Addtongue(mastcost));
                 balance = balance - totalcost;
                 #endregion
+                Console.Clear();
+                Console.WriteLine("You're Now Ready To Travel The Trail");
+                Console.WriteLine("Press 'Enter' To Continue");
+                Console.ReadLine();
+                do {
+                    bool ff = true;
+                    landmark = 25;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        sailpatch = SailBreak(sailpatch);
+                        if (sailpatch < 0) { sailpatch = 0; win = 1; }
+                        hullpatch = HullBreak(hullpatch);
+                        if (hullpatch < 0) { hullpatch = 0; win = 1; }
+                        mastpatch = MastBreak(mastpatch);
+                        if (mastpatch < 0) { mastpatch = 0; win = 1; }
+                        yak = SnakeBite(yak);
+                        if (yak == 0)
+                        {
+                            win = 1;
+                        }
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 13)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    if (win != 1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Reached The End Of This River, You're Yak Will Pull Your Boat \nAcross The Land To The Next River, There Is a Town Along The Path");
+                        Console.WriteLine("Press 'Enter' To Continue");
+                        Console.ReadLine();
+                    }
+                    ff = true;
+                    landmark = 7;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        sailpatch = SailBreak(sailpatch);
+                        if (sailpatch < 0) { sailpatch = 0; win = 1; }
+                        hullpatch = HullBreak(hullpatch);
+                        if (hullpatch < 0) { hullpatch = 0; win = 1; }
+                        mastpatch = MastBreak(mastpatch);
+                        if (mastpatch < 0) { mastpatch = 0; win = 1; }
+                        yak = SnakeBite(yak);
+                        if (yak == 0)
+                        {
+                            win = 1;
+                        }
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 13)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    int ghuy = 0;
+                    string ghui = "";
+                    int ghuj = 0;
+                    while (ghuj == 0 && win != 1)
+                    {
+                        while (ghuy == 0 && win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Come Up To A Town");
+                            Console.WriteLine("1: Go Shop");
+                            Console.WriteLine("2: Continue On Trail");
+                            ghui = Console.ReadLine();
+                            if (ghui == "1" || ghui == "2")
+                            {
+                                ghuy = 1;
+                            }
+                        }
+                        if (ghui == "1")
+                        {
+                            #region Shop
+                            yakcost = 0;
+                            shopowner = "Mike";
+                            foodcost = 0;
+                            clothescost = 0;
+                            baitcost = 0;
+                            partcost = 0;
+                            hullcost = 0;
+                            sailcost = 0;
+                            mastcost = 0;
+                            totalcost = 0;
+                            a = 0;
+                            shopick = "";
+                            do
+                            {
+                                Console.Clear();
+                                totalcost = yakcost + foodcost + clothescost + baitcost + partcost;
+                                Console.WriteLine("{0}: 'Welcome To My Shop, What Would You Like To Buy?'", shopowner);
+                                Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
+                                Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
+                                Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
+                                Console.WriteLine("4: ammo.  .  .  .  .  .  .  .  .  .  {0:C}", baitcost);
+                                Console.WriteLine("5: boat parts.  .  .  .  .  .  .  .  {0:C}", partcost);
+                                Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
+                                Console.WriteLine("Leave: Exit Shop/Buy");
+                                shopick = Console.ReadLine().ToUpper();
+                                if (shopick == "1")
+                                {
+                                    yakcost = Yak(shopowner);
+                                }
+                                if (shopick == "2")
+                                {
+                                    foodcost = Food(shopowner);
+                                }
+                                if (shopick == "3")
+                                {
+                                    clothescost = Clothe(shopowner);
+                                }
+                                if (shopick == "4")
+                                {
+                                    baitcost = Ammo(shopowner);
+                                }
+                                if (shopick == "5")
+                                {
+                                    int hulcost = 0;
+                                    int salcost = 0;
+                                    int mascost = 0;
+                                    int ttalcost = 0;
+                                    int bb = 0;
+                                    do
+                                    {
+                                        Console.Clear();
+                                        string d = "";
+                                        string b = "";
+                                        ttalcost = hulcost + salcost + mascost;
+                                        Console.WriteLine("{0}: 'I sell boat patches for $10 each, which patch do you need?'", shopowner);
+                                        Console.WriteLine("1: Hull Patch .  .  .  .  .  .  .  .  .  {0:C}", hulcost);
+                                        Console.WriteLine("2: Sail Patch .  .  .  .  .  .  .  .  .  {0:C}", salcost);
+                                        Console.WriteLine("3: Mast Patch .  .  .  .  .  .  .  .  .  {0:C}", mascost);
+                                        Console.WriteLine("Press Enter To Go Back .  .  .  . Total: {0:C}", ttalcost);
+                                        d = Console.ReadLine().ToUpper();
+                                        if (d == "1")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        hulcost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "2")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        salcost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "3")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", a);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        mascost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "")
+                                        {
+                                            Console.Clear();
+                                            bb = 1;
+                                        }
+                                    } while (bb == 0);
+                                    hullcost = hulcost;
+                                    sailcost = salcost;
+                                    mastcost = mascost;
+                                    partcost = ttalcost;
+                                }
+                                if (shopick == "LEAVE")
+                                {
+                                    int hh = 0;
+                                    if (yak == 0 && yakcost == 0)
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine("You Need Yak To Pull Your Boat");
+                                        Console.WriteLine("Press Enter To Continue");
+                                        Console.ReadLine();
+                                        hh = 1;
+                                    }
+                                    if (balance < totalcost && hh != 1)
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine("Not Enough Funds");
+                                        Console.WriteLine("Press Enter To Continue");
+                                        Console.ReadLine();
+                                        hh = 1;
+                                    }
+                                    if (hh == 0)
+                                    {
+                                        Console.Clear();
+                                        a = 1;
+                                        ghuj = 1;
+                                    }
+                                }
+                            } while (a == 0);
+                            yak += (Addyak(yakcost));
+                            food += (Addfood(foodcost));
+                            clothes += (Addclothe(clothescost));
+                            bait += (Addammo(baitcost));
+                            hullpatch += (Addwheel(hullcost));
+                            sailpatch += (Addaxle(sailcost));
+                            mastpatch += (Addtongue(mastcost));
+                            balance = balance - totalcost;
+                            #endregion
+                        }
+                        if (ghui == "2")
+                        {
+                            ghuj = 1;
+                        }
+                    }
+                    ff = true;
+                    landmark = 3;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        sailpatch = SailBreak(sailpatch);
+                        if (sailpatch < 0) { sailpatch = 0; win = 1; }
+                        hullpatch = HullBreak(hullpatch);
+                        if (hullpatch < 0) { hullpatch = 0; win = 1; }
+                        mastpatch = MastBreak(mastpatch);
+                        if (mastpatch < 0) { mastpatch = 0; win = 1; }
+                        yak = SnakeBite(yak);
+                        if (yak == 0)
+                        {
+                            win = 1;
+                        }
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 13)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    Console.Clear();
+                    if (win != 1)
+                    {
+                        Console.WriteLine("You Are Back On A River");
+                        Console.WriteLine("Press 'Enter' To Continue");
+                        Console.ReadLine();
+                    }
+                    ff = true;
+                    landmark = 31;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        sailpatch = SailBreak(sailpatch);
+                        if (sailpatch < 0) { sailpatch = 0; win = 1; }
+                        hullpatch = HullBreak(hullpatch);
+                        if (hullpatch < 0) { hullpatch = 0; win = 1; }
+                        mastpatch = MastBreak(mastpatch);
+                        if (mastpatch < 0) { mastpatch = 0; win = 1; }
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 13)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    if (win != 1)
+                    {
+                        win = 2;
+                    }
+                } while (win == 0) ;
+                 Console.Clear();
+                if (win == 1)
+                {
+                    Console.WriteLine("You Lose");
+                    if (food == 0)
+                    {
+                        Console.WriteLine("You Starved To Death");
+                        Console.WriteLine("Press Enter To End Game");
+                        Console.ReadLine();
+                    }
+                    if (yak == 0 || wheel == 0 || axle == 0 || tongue == 0)
+                    {
+                        Console.WriteLine("You Couldn't Pull Your Wagon");
+                        Console.WriteLine("Press Enter To End Game");
+                        Console.ReadLine();
+                    }
+                }
+                if (win == 2)
+                {
+                    Console.WriteLine("You Made It Through The Oregon Trail");
+                    Console.WriteLine("Press Enter To Close Game");
+                    Console.ReadLine();
+                }
             }
+#endregion
+            #region Land Route
             if (route == 2)
             {
                 currentRoom = 1;
@@ -819,69 +1356,2755 @@ namespace Final_Exam
                 Console.WriteLine("You're Now Ready To Travel The Trail");
                 Console.WriteLine("Press 'Enter' To Continue");
                 Console.ReadLine();
-                #region G 1-15
-                bool ff = true;
-                landmark = 15;
                 do
                 {
-                    string stop;
-                   
-                    Console.Clear();
-                    healthref = HealthL(healthref, food, clothes, people);
-                    health = Health(healthref, health);
-                    food = FoodL(food, yak, people);
-                    int bk = 0;
-                    do
+                    #region G 1-15
+                    bool ff = true;
+                    landmark = 15;
+                    while (ff == true && win != 1)
                     {
-                        Console.WriteLine("Health: {0}", health);
-                        Console.WriteLine("Food: {0} Pounds", food);
-                        Console.WriteLine("Next Landmark: {0} moves", landmark);
-                        landmark -= 1;
-                        currentRoom += 1;
-                        Console.WriteLine("Press 'Enter' To Move");
-                        Console.WriteLine("1: To Stop");
-                        stop = Console.ReadLine();
-                        if (stop == "")
+                        string stop;
+                        win = WagonFail(yak);
+                        yak = SnakeBite(yak);
+                        wheel = WheelBreak(wheel);
+                        if (wheel < 0) { wheel = 0; win = 1; }
+                        axle = AxleBreak(axle);
+                        if (axle < 0) { axle = 0; win = 1; }
+                        tongue = TongueBreak(tongue);
+                        if (tongue < 0) { tongue = 0; win = 1; }
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
                         {
-                            bk = 1;
+                            win = 1;
                         }
-                        int mk = 0;
-                         
-                        if (stop == "1")
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
                         {
-                            do
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
                             {
-                                stop = Stopping(stop);
-                                if (stop == "1")
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 13)
                                 {
-                                    mk = 1;
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
                                 }
-                                if (stop == "2")
-                                {
-                                    string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
-                                }
-                                if (stop == "3")
-                                {
-                                    food = Hunting(food, ammo);
-                                    ammo = AmmoL(ammo);
-                                }
-                                if (landmark == 0)
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    #endregion
+                    #region A 1-6 and B 1-11
+                    int hrt = 0;
+                    string hr = "";
+                    while (hrt == 0 && win != 1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Come Up On A Split Pathway \nTo The Left You'll Have To Cross A \nRiver But It Will Be Quicker");
+                        Console.WriteLine("To The Right There Is A Bridge \nSo It Is Safer To Cross But It Will \nTake Longer");
+                        Console.WriteLine("1: Left");
+                        Console.WriteLine("2: Right");
+                        hr = Console.ReadLine();
+                        if (hr == "1" || hr == "2")
+                        {
+                            hrt = 1;
+                        }
+                    }
+                    if (hr == "1")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Turn Down The Left Trail Towards The River");
+                        Console.WriteLine("Press 'Enter' To Continue");
+                        Console.ReadLine();
+                        ff = true;
+                        landmark = 4;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
                                 {
                                     bk = 1;
                                 }
-                            } while (mk == 0);
-                        }
-                    } while (bk == 0);
-                    if (landmark == 0)
-                    {
-                        ff = false;
-                    }
+                                int mk = 0;
 
-                } while (ff == true);
-                #endregion
-                Console.WriteLine(currentRoom);
-                Console.ReadLine();
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                        Random rnd = new Random();
+                        int rilver = rnd.Next(1, 4);
+                        if (win != 1)
+                        {
+
+                            Console.Clear();
+                            Console.WriteLine("You Come Up On The River");
+                            Console.WriteLine("Press 'Enter' To Attempt To Cross The River");
+                            Console.ReadLine();
+                        }
+                        Console.Clear();
+
+                        if (rilver == 2 && win != 1)
+                        {
+                            Console.WriteLine("You Lost Some Supplies In The River");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                            Console.Clear();
+                            int lussk = rnd.Next(1, 8);
+                            if (lussk == 1)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                yak -= hups;
+                                if (yak < 0)
+                                {
+                                    yak = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Yak", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 2)
+                            {
+                                int hups = rnd.Next(100, 501);
+                                food -= hups;
+                                if (food < 0)
+                                {
+                                    food = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Punds Of Food", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 3)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                clothes -= hups;
+                                if (clothes < 0)
+                                {
+                                    clothes = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Sets Of Clothes", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 4)
+                            {
+                                int hups = rnd.Next(15, 101);
+                                ammo -= hups;
+                                if (ammo < 0)
+                                {
+                                    ammo = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Bullets", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 5)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                axle -= hups;
+                                if (axle < 0)
+                                {
+                                    axle = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Axle(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 6)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                wheel -= hups;
+                                if (wheel < 0)
+                                {
+                                    wheel = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Wheel(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 7)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                tongue -= hups;
+                                if (tongue < 0)
+                                {
+                                    tongue = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Tongue(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Crossed The River Safly");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                        }
+                        ff = true;
+                        landmark = 2;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                    }
+                    if (hr == "2")
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Turn Down The Right Trail Towards The Bridge");
+                        Console.WriteLine("Press 'Enter' To Continue");
+                        Console.ReadLine();
+                        ff = true;
+                        landmark = 12;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                    }
+                    int ghuy = 0;
+                    string ghui = "";
+                    int ghuj = 0;
+                    while (ghuj == 0 && win != 1)
+                    {
+                        while (ghuy == 0 && win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Come Up To A Town");
+                            Console.WriteLine("1: Go Shop");
+                            Console.WriteLine("2: Continue On Trail");
+                            ghui = Console.ReadLine();
+                            if (ghui == "1" || ghui == "2")
+                            {
+                                ghuy = 1;
+                            }
+                        }
+                        if (ghui == "1")
+                        {
+                            #region Shop
+                            yakcost = 0;
+                            shopowner = "Zack";
+                            foodcost = 0;
+                            clothescost = 0;
+                            ammocost = 0;
+                            partcost = 0;
+                            wheelcost = 0;
+                            axlecost = 0;
+                            tonguecost = 0;
+                            totalcost = 0;
+                            a = 0;
+                            shopick = "";
+                            do
+                            {
+                                Console.Clear();
+                                totalcost = yakcost + foodcost + clothescost + ammocost + partcost;
+                                Console.WriteLine("{0}: 'Welcome To My Shop, What Would You Like To Buy?'", shopowner);
+                                Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
+                                Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
+                                Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
+                                Console.WriteLine("4: ammuniton .  .  .  .  .  .  .  .  {0:C}", ammocost);
+                                Console.WriteLine("5: wagon parts  .  .  .  .  .  .  .  {0:C}", partcost);
+                                Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
+                                Console.WriteLine("Leave: Exit Shop/Buy");
+                                shopick = Console.ReadLine().ToUpper();
+                                if (shopick == "1")
+                                {
+                                    yakcost = Yak(shopowner);
+                                }
+                                if (shopick == "2")
+                                {
+                                    foodcost = Food(shopowner);
+                                }
+                                if (shopick == "3")
+                                {
+                                    clothescost = Clothe(shopowner);
+                                }
+                                if (shopick == "4")
+                                {
+                                    ammocost = Ammo(shopowner);
+                                }
+                                if (shopick == "5")
+                                {
+                                    int whelcost = 0;
+                                    int axecost = 0;
+                                    int toguecost = 0;
+                                    int ttalcost = 0;
+                                    int bb = 0;
+                                    do
+                                    {
+                                        Console.Clear();
+                                        string d = "";
+                                        string b = "";
+                                        ttalcost = axecost + whelcost + toguecost;
+                                        Console.WriteLine("{0}: 'I sell wagon parts for $10 each, which part do you need?'", shopowner);
+                                        Console.WriteLine("1: Wagon Wheel.  .  .  .  .  .  .  .  .  {0:C}", whelcost);
+                                        Console.WriteLine("2: Wagon Axle .  .  .  .  .  .  .  .  .  {0:C}", axecost);
+                                        Console.WriteLine("3: Wagon Tongue  .  .  .  .  .  .  .  .  {0:C}", toguecost);
+                                        Console.WriteLine("Press Enter To Go Back .  .  .  . Total: {0:C}", ttalcost);
+                                        d = Console.ReadLine();
+                                        if (d == "1")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        whelcost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "2")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        axecost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "3")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", a);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        toguecost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "")
+                                        {
+                                            Console.Clear();
+                                            bb = 1;
+                                        }
+                                    } while (bb == 0);
+                                    wheelcost = whelcost;
+                                    axlecost = axecost;
+                                    tonguecost = toguecost;
+                                    partcost = ttalcost;
+                                }
+                                if (shopick == "LEAVE")
+                                {
+                                    int hh = 0;
+
+                                    if (balance < totalcost)
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine("Not Enough Funds");
+                                        Console.WriteLine("Press Enter To Continue");
+                                        Console.ReadLine();
+                                        hh = 1;
+                                    }
+                                    if (hh == 0)
+                                    {
+                                        Console.Clear();
+                                        a = 1;
+                                        ghuj = 1;
+                                    }
+
+                                }
+                            } while (a == 0);
+                            yak += (Addyak(yakcost));
+                            food += (Addfood(foodcost));
+                            clothes += (Addclothe(clothescost));
+                            ammo += (Addammo(ammocost));
+                            wheel += (Addwheel(wheelcost));
+                            axle += (Addaxle(axlecost));
+                            tongue += (Addtongue(tonguecost));
+                            balance = balance - totalcost;
+                            #endregion
+                        }
+                        if (ghui == "2")
+                        {
+                            ghuj = 1;
+                        }
+                    }
+                    #endregion
+                    #region G 16-23
+                    ff = true;
+                    landmark = 9;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        win = WagonFail(yak);
+                        yak = SnakeBite(yak);
+                        wheel = WheelBreak(wheel);
+                        if (wheel < 0) { wheel = 0; win = 1; }
+                        axle = AxleBreak(axle);
+                        if (axle < 0) { axle = 0; win = 1; }
+                        tongue = TongueBreak(tongue);
+                        if (tongue < 0) { tongue = 0; win = 1; }
+                        fooddeath = Death(healthref, fooddeath);
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 1)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    #endregion
+                    #region A 7-18 and B 12-20
+                    int abc = 0;
+                    string cba = "";
+                    while (abc == 0 && win != 1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Come Up On A Split Pathway");
+                        Console.WriteLine("To The Left Leads Around The Mountains Ahead\nIt Is Much Safer" +
+                            " But Will Take Much Longer.");
+                        Console.WriteLine("To The Right Leads Through The Mountains\nIt Is Much Quicker But" +
+                            " Much More Dangerous.");
+                        Console.WriteLine("1: Left");
+                        Console.WriteLine("2: Right");
+                        cba = Console.ReadLine();
+                        if (cba == "1" || cba == "2")
+                        {
+                            abc = 1;
+                        }
+                    }
+                    Console.Clear();
+                    if (cba == "1")
+                    {
+                        ff = true;
+                        landmark = 14;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                    }
+                    if (cba == "2")
+                    {
+                        ff = true;
+                        landmark = 11;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            food = RockSlide(food);
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                    }
+                    int huy = 0;
+                    string hui = "";
+                    int huj = 0;
+                    while (huj == 0 && win != 1)
+                    {
+                        while (huy == 0 && win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Come Up To A Town");
+                            Console.WriteLine("1: Go Shop");
+                            Console.WriteLine("2: Continue On Trail");
+                            hui = Console.ReadLine();
+                            if (hui == "1" || hui == "2")
+                            {
+                                huy = 1;
+                            }
+                        }
+                        if (hui == "1")
+                        {
+                            #region Shop
+                            yakcost = 0;
+                            shopowner = "Zack";
+                            foodcost = 0;
+                            clothescost = 0;
+                            ammocost = 0;
+                            partcost = 0;
+                            wheelcost = 0;
+                            axlecost = 0;
+                            tonguecost = 0;
+                            totalcost = 0;
+                            a = 0;
+                            shopick = "";
+                            do
+                            {
+                                Console.Clear();
+                                totalcost = yakcost + foodcost + clothescost + ammocost + partcost;
+                                Console.WriteLine("{0}: 'Welcome To My Shop, What Would You Like To Buy?'", shopowner);
+                                Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
+                                Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
+                                Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
+                                Console.WriteLine("4: ammuniton .  .  .  .  .  .  .  .  {0:C}", ammocost);
+                                Console.WriteLine("5: wagon parts  .  .  .  .  .  .  .  {0:C}", partcost);
+                                Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
+                                Console.WriteLine("Leave: Exit Shop/Buy");
+                                shopick = Console.ReadLine().ToUpper();
+                                if (shopick == "1")
+                                {
+                                    yakcost = Yak(shopowner);
+                                }
+                                if (shopick == "2")
+                                {
+                                    foodcost = Food(shopowner);
+                                }
+                                if (shopick == "3")
+                                {
+                                    clothescost = Clothe(shopowner);
+                                }
+                                if (shopick == "4")
+                                {
+                                    ammocost = Ammo(shopowner);
+                                }
+                                if (shopick == "5")
+                                {
+                                    int whelcost = 0;
+                                    int axecost = 0;
+                                    int toguecost = 0;
+                                    int ttalcost = 0;
+                                    int bb = 0;
+                                    do
+                                    {
+                                        Console.Clear();
+                                        string d = "";
+                                        string b = "";
+                                        ttalcost = axecost + whelcost + toguecost;
+                                        Console.WriteLine("{0}: 'I sell wagon parts for $10 each, which part do you need?'", shopowner);
+                                        Console.WriteLine("1: Wagon Wheel.  .  .  .  .  .  .  .  .  {0:C}", whelcost);
+                                        Console.WriteLine("2: Wagon Axle .  .  .  .  .  .  .  .  .  {0:C}", axecost);
+                                        Console.WriteLine("3: Wagon Tongue  .  .  .  .  .  .  .  .  {0:C}", toguecost);
+                                        Console.WriteLine("Press Enter To Go Back .  .  .  . Total: {0:C}", ttalcost);
+                                        d = Console.ReadLine();
+                                        if (d == "1")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        whelcost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "2")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        axecost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "3")
+                                        {
+                                            int gg = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", a);
+                                                b = Console.ReadLine();
+                                                if (int.TryParse(b, out int c) != false)
+                                                {
+                                                    if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                    {
+                                                        int hh = 10;
+                                                        var add = Convert.ToInt32(b);
+                                                        toguecost = add * hh;
+                                                        gg = 1;
+                                                    }
+                                                }
+                                            } while (gg == 0);
+                                        }
+                                        if (d == "")
+                                        {
+                                            Console.Clear();
+                                            bb = 1;
+                                        }
+                                    } while (bb == 0);
+                                    wheelcost = whelcost;
+                                    axlecost = axecost;
+                                    tonguecost = toguecost;
+                                    partcost = ttalcost;
+                                }
+                                if (shopick == "LEAVE")
+                                {
+                                    int hh = 0;
+                                    if (yak == 0 && yakcost == 0)
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine("You Need Yak To Pull Your Wagon");
+                                        Console.WriteLine("Press Enter To Continue");
+                                        Console.ReadLine();
+                                        hh = 1;
+                                    }
+                                    if (balance < totalcost && hh != 1)
+                                    {
+                                        Console.Clear();
+                                        Console.WriteLine("Not Enough Funds");
+                                        Console.WriteLine("Press Enter To Continue");
+                                        Console.ReadLine();
+                                        hh = 1;
+                                    }
+                                    if (hh == 0)
+                                    {
+                                        Console.Clear();
+                                        a = 1;
+                                        huj = 1;
+                                    }
+                                }
+                            } while (a == 0);
+                            yak += (Addyak(yakcost));
+                            food += (Addfood(foodcost));
+                            clothes += (Addclothe(clothescost));
+                            ammo += (Addammo(ammocost));
+                            wheel += (Addwheel(wheelcost));
+                            axle += (Addaxle(axlecost));
+                            tongue += (Addtongue(tonguecost));
+                            balance = balance - totalcost;
+                            #endregion
+                        }
+                        if (hui == "2")
+                        {
+                            huj = 1;
+                        }
+                    }
+                    #endregion
+                    #region G 25-32
+                    ff = true;
+                    landmark = 9;
+                    while (ff == true && win != 1)
+                    {
+                        string stop;
+                        win = WagonFail(yak);
+                        yak = SnakeBite(yak);
+                        wheel = WheelBreak(wheel);
+                        if (wheel < 0) { wheel = 0; win = 1; }
+                        axle = AxleBreak(axle);
+                        if (axle < 0) { axle = 0; win = 1; }
+                        tongue = TongueBreak(tongue);
+                        if (tongue < 0) { tongue = 0; win = 1; }
+                        fooddeath = Death(healthref, fooddeath);
+                        fooddeath = Death(healthref, fooddeath);
+                        if (fooddeath == 0)
+                        {
+                            win = 1;
+                        }
+                        Console.Clear();
+                        healthref = HealthL(healthref, food, clothes, people);
+                        health = Health(healthref, health);
+                        food = FoodL(food, yak, people);
+                        int bk = 0;
+                        while (bk == 0 && win != 1)
+                        {
+                            Console.WriteLine("Health: {0}", health);
+                            Console.WriteLine("Food: {0} Pounds", food);
+                            Console.WriteLine("Next Landmark: {0} moves", landmark);
+                            landmark -= 1;
+                            currentRoom += 1;
+                            Console.WriteLine("Press 'Enter' To Move");
+                            Console.WriteLine("1: To Stop");
+                            stop = Console.ReadLine();
+                            if (stop == "")
+                            {
+                                bk = 1;
+                            }
+                            int mk = 0;
+
+                            if (stop == "1")
+                            {
+                                while (mk == 0 && win != 1)
+                                {
+                                    stop = Stopping(stop);
+                                    if (stop == "1")
+                                    {
+                                        mk = 1;
+                                    }
+                                    if (stop == "2")
+                                    {
+                                        string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                    }
+                                    if (stop == "3")
+                                    {
+                                        food = Hunting(food, ammo);
+                                        ammo = AmmoL(ammo);
+                                    }
+                                    if (landmark == 0)
+                                    {
+                                        bk = 1;
+                                    }
+                                }
+                            }
+                        }
+                        if (landmark == 0)
+                        {
+                            ff = false;
+                        }
+
+                    }
+                    #endregion
+                    int yup = 0;
+                    string yep = "";
+                    while (yup == 0 && win != 1)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You Come Up On A Split Pathway");
+                        Console.WriteLine("To The Left There Are Two Rivers You'll Have To Cross But It Is Quicker");
+                        Console.WriteLine("To The Right There Is Only One River But It Will Take Longer");
+                        Console.WriteLine("1: Left");
+                        Console.WriteLine("2: Right");
+                        yep = Console.ReadLine();
+                        if (yep == "1" || yep == "2")
+                        {
+                            yup = 1;
+                        }
+                    }
+                    #region ending 1
+                    if (yep == "1")
+                    {
+                        ff = true;
+                        landmark = 1;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                        Random rnd = new Random();
+                        int rilver = rnd.Next(1, 4);
+                        if (win != 1)
+                        {
+
+                            Console.Clear();
+                            Console.WriteLine("You Come Up On The River");
+                            Console.WriteLine("Press 'Enter' To Attempt To Cross The River");
+                            Console.ReadLine();
+                        }
+                        Console.Clear();
+
+                        if (rilver == 2 && win != 1)
+                        {
+                            Console.WriteLine("You Lost Some Supplies In The River");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                            Console.Clear();
+                            int lussk = rnd.Next(1, 8);
+                            if (lussk == 1)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                yak -= hups;
+                                if (yak < 0)
+                                {
+                                    yak = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Yak", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 2)
+                            {
+                                int hups = rnd.Next(100, 501);
+                                food -= hups;
+                                if (food < 0)
+                                {
+                                    food = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Punds Of Food", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 3)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                clothes -= hups;
+                                if (clothes < 0)
+                                {
+                                    clothes = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Sets Of Clothes", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 4)
+                            {
+                                int hups = rnd.Next(15, 101);
+                                ammo -= hups;
+                                if (ammo < 0)
+                                {
+                                    ammo = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Bullets", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 5)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                axle -= hups;
+                                if (axle < 0)
+                                {
+                                    axle = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Axle(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 6)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                wheel -= hups;
+                                if (wheel < 0)
+                                {
+                                    wheel = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Wheel(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 7)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                tongue -= hups;
+                                if (tongue < 0)
+                                {
+                                    tongue = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Tongue(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                        }
+                        else if (win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Crossed The River Safly");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                        }
+                        ff = true;
+                        landmark = 8;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+                        }
+                        rilver = rnd.Next(1, 4);
+                        if (win != 1)
+                        {
+
+                            Console.Clear();
+                            Console.WriteLine("You Come Up On The River");
+                            Console.WriteLine("Press 'Enter' To Attempt To Cross The River");
+                            Console.ReadLine();
+                        }
+                        Console.Clear();
+
+                        if (rilver == 2 && win != 1)
+                        {
+                            Console.WriteLine("You Lost Some Supplies In The River");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                            Console.Clear();
+                            int lussk = rnd.Next(1, 8);
+                            if (lussk == 1)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                yak -= hups;
+                                if (yak < 0)
+                                {
+                                    yak = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Yak", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 2)
+                            {
+                                int hups = rnd.Next(100, 501);
+                                food -= hups;
+                                if (food < 0)
+                                {
+                                    food = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Punds Of Food", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 3)
+                            {
+                                int hups = rnd.Next(1, 4);
+                                clothes -= hups;
+                                if (clothes < 0)
+                                {
+                                    clothes = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Sets Of Clothes", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 4)
+                            {
+                                int hups = rnd.Next(15, 101);
+                                ammo -= hups;
+                                if (ammo < 0)
+                                {
+                                    ammo = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Bullets", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 5)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                axle -= hups;
+                                if (axle < 0)
+                                {
+                                    axle = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Axle(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 6)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                wheel -= hups;
+                                if (wheel < 0)
+                                {
+                                    wheel = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Wheel(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            if (lussk == 7)
+                            {
+                                int hups = rnd.Next(1, 3);
+                                tongue -= hups;
+                                if (tongue < 0)
+                                {
+                                    tongue = 0;
+                                }
+                                Console.WriteLine("You Lost {0} Wagon Tongue(s)", hups);
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                        }
+                        else if (win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Crossed The River Safly");
+                            Console.WriteLine("Press 'Enter' To Continue");
+                            Console.ReadLine();
+                        }
+                        ff = true;
+                        landmark = 5;
+                        while (ff == true && win != 1)
+                        {
+
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                        huy = 0;
+                        hui = "";
+                        huj = 0;
+                        while (huj == 0 && win != 1)
+                        {
+                            while (huy == 0 && win != 1)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You Come Up To A Town");
+                                Console.WriteLine("1: Go Shop");
+                                Console.WriteLine("2: Continue On Trail");
+                                hui = Console.ReadLine();
+                                if (hui == "1" || hui == "2")
+                                {
+                                    huy = 1;
+                                }
+                            }
+                            if (hui == "1")
+                            {
+                                #region Shop
+                                yakcost = 0;
+                                shopowner = "Lisa";
+                                foodcost = 0;
+                                clothescost = 0;
+                                ammocost = 0;
+                                partcost = 0;
+                                wheelcost = 0;
+                                axlecost = 0;
+                                tonguecost = 0;
+                                totalcost = 0;
+                                a = 0;
+                                shopick = "";
+                                do
+                                {
+                                    Console.Clear();
+                                    totalcost = yakcost + foodcost + clothescost + ammocost + partcost;
+                                    Console.WriteLine("{0}: 'Welcome To My Shop, What Would You Like To Buy?'", shopowner);
+                                    Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
+                                    Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
+                                    Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
+                                    Console.WriteLine("4: ammuniton .  .  .  .  .  .  .  .  {0:C}", ammocost);
+                                    Console.WriteLine("5: wagon parts  .  .  .  .  .  .  .  {0:C}", partcost);
+                                    Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
+                                    Console.WriteLine("Leave: Exit Shop/Buy");
+                                    shopick = Console.ReadLine().ToUpper();
+                                    if (shopick == "1")
+                                    {
+                                        yakcost = Yak(shopowner);
+                                    }
+                                    if (shopick == "2")
+                                    {
+                                        foodcost = Food(shopowner);
+                                    }
+                                    if (shopick == "3")
+                                    {
+                                        clothescost = Clothe(shopowner);
+                                    }
+                                    if (shopick == "4")
+                                    {
+                                        ammocost = Ammo(shopowner);
+                                    }
+                                    if (shopick == "5")
+                                    {
+                                        int whelcost = 0;
+                                        int axecost = 0;
+                                        int toguecost = 0;
+                                        int ttalcost = 0;
+                                        int bb = 0;
+                                        do
+                                        {
+                                            Console.Clear();
+                                            string d = "";
+                                            string b = "";
+                                            ttalcost = axecost + whelcost + toguecost;
+                                            Console.WriteLine("{0}: 'I sell wagon parts for $10 each, which part do you need?'", shopowner);
+                                            Console.WriteLine("1: Wagon Wheel.  .  .  .  .  .  .  .  .  {0:C}", whelcost);
+                                            Console.WriteLine("2: Wagon Axle .  .  .  .  .  .  .  .  .  {0:C}", axecost);
+                                            Console.WriteLine("3: Wagon Tongue  .  .  .  .  .  .  .  .  {0:C}", toguecost);
+                                            Console.WriteLine("Press Enter To Go Back .  .  .  . Total: {0:C}", ttalcost);
+                                            d = Console.ReadLine();
+                                            if (d == "1")
+                                            {
+                                                int gg = 0;
+                                                do
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                    b = Console.ReadLine();
+                                                    if (int.TryParse(b, out int c) != false)
+                                                    {
+                                                        if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                        {
+                                                            int hh = 10;
+                                                            var add = Convert.ToInt32(b);
+                                                            whelcost = add * hh;
+                                                            gg = 1;
+                                                        }
+                                                    }
+                                                } while (gg == 0);
+                                            }
+                                            if (d == "2")
+                                            {
+                                                int gg = 0;
+                                                do
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                    b = Console.ReadLine();
+                                                    if (int.TryParse(b, out int c) != false)
+                                                    {
+                                                        if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                        {
+                                                            int hh = 10;
+                                                            var add = Convert.ToInt32(b);
+                                                            axecost = add * hh;
+                                                            gg = 1;
+                                                        }
+                                                    }
+                                                } while (gg == 0);
+                                            }
+                                            if (d == "3")
+                                            {
+                                                int gg = 0;
+                                                do
+                                                {
+                                                    Console.Clear();
+                                                    Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", a);
+                                                    b = Console.ReadLine();
+                                                    if (int.TryParse(b, out int c) != false)
+                                                    {
+                                                        if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                        {
+                                                            int hh = 10;
+                                                            var add = Convert.ToInt32(b);
+                                                            toguecost = add * hh;
+                                                            gg = 1;
+                                                        }
+                                                    }
+                                                } while (gg == 0);
+                                            }
+                                            if (d == "")
+                                            {
+                                                Console.Clear();
+                                                bb = 1;
+                                            }
+                                        } while (bb == 0);
+                                        wheelcost = whelcost;
+                                        axlecost = axecost;
+                                        tonguecost = toguecost;
+                                        partcost = ttalcost;
+                                    }
+                                    if (shopick == "LEAVE")
+                                    {
+                                        int hh = 0;
+                                        if (yak == 0 && yakcost == 0)
+                                        {
+                                            Console.Clear();
+                                            Console.WriteLine("You Need Yak To Pull Your Wagon");
+                                            Console.WriteLine("Press Enter To Continue");
+                                            Console.ReadLine();
+                                            hh = 1;
+                                        }
+                                        if (balance < totalcost && hh != 1)
+                                        {
+                                            Console.Clear();
+                                            Console.WriteLine("Not Enough Funds");
+                                            Console.WriteLine("Press Enter To Continue");
+                                            Console.ReadLine();
+                                            hh = 1;
+                                        }
+                                        if (hh == 0)
+                                        {
+                                            Console.Clear();
+                                            a = 1;
+                                            huj = 1;
+                                        }
+                                    }
+                                } while (a == 0);
+                                yak += (Addyak(yakcost));
+                                food += (Addfood(foodcost));
+                                clothes += (Addclothe(clothescost));
+                                ammo += (Addammo(ammocost));
+                                wheel += (Addwheel(wheelcost));
+                                axle += (Addaxle(axlecost));
+                                tongue += (Addtongue(tonguecost));
+                                balance = balance - totalcost;
+                                #endregion
+                            }
+                            if (hui == "2")
+                            {
+                                huj = 1;
+                            }
+                        }
+                        ff = true;
+                        landmark = 11;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                        if (win != 1)
+                        {
+                            win = 2;
+                        }
+
+                    }
+                    #endregion
+                    if (yep == "2")
+                    {
+                        ff = true;
+                        landmark = 4;
+                        while (ff == true && win != 1)
+                        {
+                            string stop;
+                            win = WagonFail(yak);
+                            yak = SnakeBite(yak);
+                            wheel = WheelBreak(wheel);
+                            if (wheel < 0) { wheel = 0; win = 1; }
+                            axle = AxleBreak(axle);
+                            if (axle < 0) { axle = 0; win = 1; }
+                            tongue = TongueBreak(tongue);
+                            if (tongue < 0) { tongue = 0; win = 1; }
+                            fooddeath = Death(healthref, fooddeath);
+                            fooddeath = Death(healthref, fooddeath);
+                            if (fooddeath == 0)
+                            {
+                                win = 1;
+                            }
+                            Console.Clear();
+                            healthref = HealthL(healthref, food, clothes, people);
+                            health = Health(healthref, health);
+                            food = FoodL(food, yak, people);
+                            int bk = 0;
+                            while (bk == 0 && win != 1)
+                            {
+                                Console.WriteLine("Health: {0}", health);
+                                Console.WriteLine("Food: {0} Pounds", food);
+                                Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                landmark -= 1;
+                                currentRoom += 1;
+                                Console.WriteLine("Press 'Enter' To Move");
+                                Console.WriteLine("1: To Stop");
+                                stop = Console.ReadLine();
+                                if (stop == "")
+                                {
+                                    bk = 1;
+                                }
+                                int mk = 0;
+
+                                if (stop == "1")
+                                {
+                                    while (mk == 0 && win != 1)
+                                    {
+                                        stop = Stopping(stop);
+                                        if (stop == "1")
+                                        {
+                                            mk = 1;
+                                        }
+                                        if (stop == "2")
+                                        {
+                                            string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                        }
+                                        if (stop == "3")
+                                        {
+                                            food = Hunting(food, ammo);
+                                            ammo = AmmoL(ammo);
+                                        }
+                                        if (landmark == 0)
+                                        {
+                                            bk = 1;
+                                        }
+                                    }
+                                }
+                            }
+                            if (landmark == 0)
+                            {
+                                ff = false;
+                            }
+
+                        }
+                        int low = 0;
+                        string liw = "";
+                        while (low == 0 && win != 1)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("You Come Up On A Split Pathway");
+                            Console.WriteLine("To The Left There Is A Town But It'll Take You Longer To Reach The End");
+                            Console.WriteLine("To The Right There Is No Town But It Is Quicker To The End");
+                            Console.WriteLine("1: Left");
+                            Console.WriteLine("2: Right");
+                            liw = Console.ReadLine();
+                            if (liw == "1" || liw == "2")
+                            {
+                                low = 1;
+                            }
+                        }
+                        #region Ending 2
+                        if (liw == "1")
+                        {
+                            ff = true;
+                            landmark = 6;
+                            while (ff == true && win != 1)
+                            {
+                                string stop;
+                                win = WagonFail(yak);
+                                yak = SnakeBite(yak);
+                                wheel = WheelBreak(wheel);
+                                if (wheel < 0) { wheel = 0; win = 1; }
+                                axle = AxleBreak(axle);
+                                if (axle < 0) { axle = 0; win = 1; }
+                                tongue = TongueBreak(tongue);
+                                if (tongue < 0) { tongue = 0; win = 1; }
+                                fooddeath = Death(healthref, fooddeath);
+                                fooddeath = Death(healthref, fooddeath);
+                                if (fooddeath == 0)
+                                {
+                                    win = 1;
+                                }
+                                Console.Clear();
+                                healthref = HealthL(healthref, food, clothes, people);
+                                health = Health(healthref, health);
+                                food = FoodL(food, yak, people);
+                                int bk = 0;
+                                while (bk == 0 && win != 1)
+                                {
+                                    Console.WriteLine("Health: {0}", health);
+                                    Console.WriteLine("Food: {0} Pounds", food);
+                                    Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                    landmark -= 1;
+                                    currentRoom += 1;
+                                    Console.WriteLine("Press 'Enter' To Move");
+                                    Console.WriteLine("1: To Stop");
+                                    stop = Console.ReadLine();
+                                    if (stop == "")
+                                    {
+                                        bk = 1;
+                                    }
+                                    int mk = 0;
+
+                                    if (stop == "1")
+                                    {
+                                        while (mk == 0 && win != 1)
+                                        {
+                                            stop = Stopping(stop);
+                                            if (stop == "1")
+                                            {
+                                                mk = 1;
+                                            }
+                                            if (stop == "2")
+                                            {
+                                                string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                            }
+                                            if (stop == "3")
+                                            {
+                                                food = Hunting(food, ammo);
+                                                ammo = AmmoL(ammo);
+                                            }
+                                            if (landmark == 0)
+                                            {
+                                                bk = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (landmark == 0)
+                                {
+                                    ff = false;
+                                }
+
+                            }
+                            Random rnd = new Random();
+                            int rilver = rnd.Next(1, 4);
+                            if (win != 1)
+                            {
+
+                                Console.Clear();
+                                Console.WriteLine("You Come Up On The River");
+                                Console.WriteLine("Press 'Enter' To Attempt To Cross The River");
+                                Console.ReadLine();
+                            }
+                            Console.Clear();
+
+                            if (rilver == 2 && win != 1)
+                            {
+                                Console.WriteLine("You Lost Some Supplies In The River");
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                                Console.Clear();
+                                int lussk = rnd.Next(1, 8);
+                                if (lussk == 1)
+                                {
+                                    int hups = rnd.Next(1, 4);
+                                    yak -= hups;
+                                    if (yak < 0)
+                                    {
+                                        yak = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Yak", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 2)
+                                {
+                                    int hups = rnd.Next(100, 501);
+                                    food -= hups;
+                                    if (food < 0)
+                                    {
+                                        food = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Punds Of Food", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 3)
+                                {
+                                    int hups = rnd.Next(1, 4);
+                                    clothes -= hups;
+                                    if (clothes < 0)
+                                    {
+                                        clothes = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Sets Of Clothes", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 4)
+                                {
+                                    int hups = rnd.Next(15, 101);
+                                    ammo -= hups;
+                                    if (ammo < 0)
+                                    {
+                                        ammo = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Bullets", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 5)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    axle -= hups;
+                                    if (axle < 0)
+                                    {
+                                        axle = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Axle(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 6)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    wheel -= hups;
+                                    if (wheel < 0)
+                                    {
+                                        wheel = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Wheel(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 7)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    tongue -= hups;
+                                    if (tongue < 0)
+                                    {
+                                        tongue = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Tongue(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                            }
+                            else if (win != 1)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You Crossed The River Safly");
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            ff = true;
+                            landmark = 5;
+                            while (ff == true && win != 1)
+                            {
+                                string stop;
+                                win = WagonFail(yak);
+                                yak = SnakeBite(yak);
+                                wheel = WheelBreak(wheel);
+                                if (wheel < 0) { wheel = 0; win = 1; }
+                                axle = AxleBreak(axle);
+                                if (axle < 0) { axle = 0; win = 1; }
+                                tongue = TongueBreak(tongue);
+                                if (tongue < 0) { tongue = 0; win = 1; }
+                                fooddeath = Death(healthref, fooddeath);
+                                fooddeath = Death(healthref, fooddeath);
+                                if (fooddeath == 0)
+                                {
+                                    win = 1;
+                                }
+                                Console.Clear();
+                                healthref = HealthL(healthref, food, clothes, people);
+                                health = Health(healthref, health);
+                                food = FoodL(food, yak, people);
+                                int bk = 0;
+                                while (bk == 0 && win != 1)
+                                {
+                                    Console.WriteLine("Health: {0}", health);
+                                    Console.WriteLine("Food: {0} Pounds", food);
+                                    Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                    landmark -= 1;
+                                    currentRoom += 1;
+                                    Console.WriteLine("Press 'Enter' To Move");
+                                    Console.WriteLine("1: To Stop");
+                                    stop = Console.ReadLine();
+                                    if (stop == "")
+                                    {
+                                        bk = 1;
+                                    }
+                                    int mk = 0;
+
+                                    if (stop == "1")
+                                    {
+                                        while (mk == 0 && win != 1)
+                                        {
+                                            stop = Stopping(stop);
+                                            if (stop == "1")
+                                            {
+                                                mk = 1;
+                                            }
+                                            if (stop == "2")
+                                            {
+                                                string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                            }
+                                            if (stop == "3")
+                                            {
+                                                food = Hunting(food, ammo);
+                                                ammo = AmmoL(ammo);
+                                            }
+                                            if (landmark == 0)
+                                            {
+                                                bk = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (landmark == 0)
+                                {
+                                    ff = false;
+                                }
+
+                            }
+                            huy = 0;
+                            hui = "";
+                            huj = 0;
+                            while (huj == 0 && win != 1)
+                            {
+                                while (huy == 0 && win != 1)
+                                {
+                                    Console.Clear();
+                                    Console.WriteLine("You Come Up To A Town");
+                                    Console.WriteLine("1: Go Shop");
+                                    Console.WriteLine("2: Continue On Trail");
+                                    hui = Console.ReadLine();
+                                    if (hui == "1" || hui == "2")
+                                    {
+                                        huy = 1;
+                                    }
+                                }
+                                if (hui == "1")
+                                {
+                                    #region Shop
+                                    yakcost = 0;
+                                    shopowner = "Lisa";
+                                    foodcost = 0;
+                                    clothescost = 0;
+                                    ammocost = 0;
+                                    partcost = 0;
+                                    wheelcost = 0;
+                                    axlecost = 0;
+                                    tonguecost = 0;
+                                    totalcost = 0;
+                                    a = 0;
+                                    shopick = "";
+                                    do
+                                    {
+                                        Console.Clear();
+                                        totalcost = yakcost + foodcost + clothescost + ammocost + partcost;
+                                        Console.WriteLine("{0}: 'Welcome To My Shop, What Would You Like To Buy?'", shopowner);
+                                        Console.WriteLine("1: yak .  .  .  .  .  .  .  .  .  .  {0:C}", yakcost);
+                                        Console.WriteLine("2: food.  .  .  .  .  .  .  .  .  .  {0:C}", foodcost);
+                                        Console.WriteLine("3: clothing  .  .  .  .  .  .  .  .  {0:C}", clothescost);
+                                        Console.WriteLine("4: ammuniton .  .  .  .  .  .  .  .  {0:C}", ammocost);
+                                        Console.WriteLine("5: wagon parts  .  .  .  .  .  .  .  {0:C}", partcost);
+                                        Console.WriteLine("Balance: {0:C}  .  .  .  .  . Total: {1:C}", balance, totalcost);
+                                        Console.WriteLine("Leave: Exit Shop/Buy");
+                                        shopick = Console.ReadLine().ToUpper();
+                                        if (shopick == "1")
+                                        {
+                                            yakcost = Yak(shopowner);
+                                        }
+                                        if (shopick == "2")
+                                        {
+                                            foodcost = Food(shopowner);
+                                        }
+                                        if (shopick == "3")
+                                        {
+                                            clothescost = Clothe(shopowner);
+                                        }
+                                        if (shopick == "4")
+                                        {
+                                            ammocost = Ammo(shopowner);
+                                        }
+                                        if (shopick == "5")
+                                        {
+                                            int whelcost = 0;
+                                            int axecost = 0;
+                                            int toguecost = 0;
+                                            int ttalcost = 0;
+                                            int bb = 0;
+                                            do
+                                            {
+                                                Console.Clear();
+                                                string d = "";
+                                                string b = "";
+                                                ttalcost = axecost + whelcost + toguecost;
+                                                Console.WriteLine("{0}: 'I sell wagon parts for $10 each, which part do you need?'", shopowner);
+                                                Console.WriteLine("1: Wagon Wheel.  .  .  .  .  .  .  .  .  {0:C}", whelcost);
+                                                Console.WriteLine("2: Wagon Axle .  .  .  .  .  .  .  .  .  {0:C}", axecost);
+                                                Console.WriteLine("3: Wagon Tongue  .  .  .  .  .  .  .  .  {0:C}", toguecost);
+                                                Console.WriteLine("Press Enter To Go Back .  .  .  . Total: {0:C}", ttalcost);
+                                                d = Console.ReadLine();
+                                                if (d == "1")
+                                                {
+                                                    int gg = 0;
+                                                    do
+                                                    {
+                                                        Console.Clear();
+                                                        Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                        b = Console.ReadLine();
+                                                        if (int.TryParse(b, out int c) != false)
+                                                        {
+                                                            if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                            {
+                                                                int hh = 10;
+                                                                var add = Convert.ToInt32(b);
+                                                                whelcost = add * hh;
+                                                                gg = 1;
+                                                            }
+                                                        }
+                                                    } while (gg == 0);
+                                                }
+                                                if (d == "2")
+                                                {
+                                                    int gg = 0;
+                                                    do
+                                                    {
+                                                        Console.Clear();
+                                                        Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", shopowner);
+                                                        b = Console.ReadLine();
+                                                        if (int.TryParse(b, out int c) != false)
+                                                        {
+                                                            if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                            {
+                                                                int hh = 10;
+                                                                var add = Convert.ToInt32(b);
+                                                                axecost = add * hh;
+                                                                gg = 1;
+                                                            }
+                                                        }
+                                                    } while (gg == 0);
+                                                }
+                                                if (d == "3")
+                                                {
+                                                    int gg = 0;
+                                                    do
+                                                    {
+                                                        Console.Clear();
+                                                        Console.WriteLine("{0}: 'How many do you need?' (Limit 3 Spare)", a);
+                                                        b = Console.ReadLine();
+                                                        if (int.TryParse(b, out int c) != false)
+                                                        {
+                                                            if (c == 0 || c == 1 || c == 2 || c == 3)
+                                                            {
+                                                                int hh = 10;
+                                                                var add = Convert.ToInt32(b);
+                                                                toguecost = add * hh;
+                                                                gg = 1;
+                                                            }
+                                                        }
+                                                    } while (gg == 0);
+                                                }
+                                                if (d == "")
+                                                {
+                                                    Console.Clear();
+                                                    bb = 1;
+                                                }
+                                            } while (bb == 0);
+                                            wheelcost = whelcost;
+                                            axlecost = axecost;
+                                            tonguecost = toguecost;
+                                            partcost = ttalcost;
+                                        }
+                                        if (shopick == "LEAVE")
+                                        {
+                                            int hh = 0;
+                                            if (yak == 0 && yakcost == 0)
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("You Need Yak To Pull Your Wagon");
+                                                Console.WriteLine("Press Enter To Continue");
+                                                Console.ReadLine();
+                                                hh = 1;
+                                            }
+                                            if (balance < totalcost && hh != 1)
+                                            {
+                                                Console.Clear();
+                                                Console.WriteLine("Not Enough Funds");
+                                                Console.WriteLine("Press Enter To Continue");
+                                                Console.ReadLine();
+                                                hh = 1;
+                                            }
+                                            if (hh == 0)
+                                            {
+                                                Console.Clear();
+                                                a = 1;
+                                                huj = 4;
+                                            }
+                                        }
+                                    } while (a == 0);
+                                    yak += (Addyak(yakcost));
+                                    food += (Addfood(foodcost));
+                                    clothes += (Addclothe(clothescost));
+                                    ammo += (Addammo(ammocost));
+                                    wheel += (Addwheel(wheelcost));
+                                    axle += (Addaxle(axlecost));
+                                    tongue += (Addtongue(tonguecost));
+                                    balance = balance - totalcost;
+                                    #endregion
+                                }
+                                if (hui == "2")
+                                {
+                                    huj = 1;
+                                }
+                            }
+                            ff = true;
+                            landmark = 11;
+                            while (ff == true && win != 1)
+                            {
+                                string stop;
+                                win = WagonFail(yak);
+                                yak = SnakeBite(yak);
+                                wheel = WheelBreak(wheel);
+                                if (wheel < 0) { wheel = 0; win = 1; }
+                                axle = AxleBreak(axle);
+                                if (axle < 0) { axle = 0; win = 1; }
+                                tongue = TongueBreak(tongue);
+                                if (tongue < 0) { tongue = 0; win = 1; }
+                                fooddeath = Death(healthref, fooddeath);
+                                fooddeath = Death(healthref, fooddeath);
+                                if (fooddeath == 0)
+                                {
+                                    win = 1;
+                                }
+                                Console.Clear();
+                                healthref = HealthL(healthref, food, clothes, people);
+                                health = Health(healthref, health);
+                                food = FoodL(food, yak, people);
+                                int bk = 0;
+                                while (bk == 0 && win != 1)
+                                {
+                                    Console.WriteLine("Health: {0}", health);
+                                    Console.WriteLine("Food: {0} Pounds", food);
+                                    Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                    landmark -= 1;
+                                    currentRoom += 1;
+                                    Console.WriteLine("Press 'Enter' To Move");
+                                    Console.WriteLine("1: To Stop");
+                                    stop = Console.ReadLine();
+                                    if (stop == "")
+                                    {
+                                        bk = 1;
+                                    }
+                                    int mk = 0;
+
+                                    if (stop == "1")
+                                    {
+                                        while (mk == 0 && win != 1)
+                                        {
+                                            stop = Stopping(stop);
+                                            if (stop == "1")
+                                            {
+                                                mk = 1;
+                                            }
+                                            if (stop == "2")
+                                            {
+                                                string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                            }
+                                            if (stop == "3")
+                                            {
+                                                food = Hunting(food, ammo);
+                                                ammo = AmmoL(ammo);
+                                            }
+                                            if (landmark == 0)
+                                            {
+                                                bk = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (landmark == 0)
+                                {
+                                    ff = false;
+                                }
+
+                            }
+                            if (win != 1)
+                            {
+                                win = 2;
+                            }
+                        }
+                        #endregion
+                        #region Ending 3
+                        if (liw == "2")
+                        {
+                            ff = true;
+                            landmark = 11;
+                            while (ff == true && win != 1)
+                            {
+                                string stop;
+                                win = WagonFail(yak);
+                                yak = SnakeBite(yak);
+                                wheel = WheelBreak(wheel);
+                                if (wheel < 0) { wheel = 0; win = 1; }
+                                axle = AxleBreak(axle);
+                                if (axle < 0) { axle = 0; win = 1; }
+                                tongue = TongueBreak(tongue);
+                                if (tongue < 0) { tongue = 0; win = 1; }
+                                fooddeath = Death(healthref, fooddeath);
+                                fooddeath = Death(healthref, fooddeath);
+                                if (fooddeath == 0)
+                                {
+                                    win = 1;
+                                }
+                                Console.Clear();
+                                healthref = HealthL(healthref, food, clothes, people);
+                                health = Health(healthref, health);
+                                food = FoodL(food, yak, people);
+                                int bk = 0;
+                                while (bk == 0 && win != 1)
+                                {
+                                    Console.WriteLine("Health: {0}", health);
+                                    Console.WriteLine("Food: {0} Pounds", food);
+                                    Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                    landmark -= 1;
+                                    currentRoom += 1;
+                                    Console.WriteLine("Press 'Enter' To Move");
+                                    Console.WriteLine("1: To Stop");
+                                    stop = Console.ReadLine();
+                                    if (stop == "")
+                                    {
+                                        bk = 1;
+                                    }
+                                    int mk = 0;
+
+                                    if (stop == "1")
+                                    {
+                                        while (mk == 0 && win != 1)
+                                        {
+                                            stop = Stopping(stop);
+                                            if (stop == "1")
+                                            {
+                                                mk = 1;
+                                            }
+                                            if (stop == "2")
+                                            {
+                                                string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                            }
+                                            if (stop == "3")
+                                            {
+                                                food = Hunting(food, ammo);
+                                                ammo = AmmoL(ammo);
+                                            }
+                                            if (landmark == 0)
+                                            {
+                                                bk = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (landmark == 0)
+                                {
+                                    ff = false;
+                                }
+
+                            }
+                            Random rnd = new Random();
+                            int rilver = rnd.Next(1, 4);
+                            if (win != 1)
+                            {
+
+                                Console.Clear();
+                                Console.WriteLine("You Come Up On The River");
+                                Console.WriteLine("Press 'Enter' To Attempt To Cross The River");
+                                Console.ReadLine();
+                            }
+                            Console.Clear();
+
+                            if (rilver == 2 && win != 1)
+                            {
+                                Console.WriteLine("You Lost Some Supplies In The River");
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                                Console.Clear();
+                                int lussk = rnd.Next(1, 8);
+                                if (lussk == 1)
+                                {
+                                    int hups = rnd.Next(1, 4);
+                                    yak -= hups;
+                                    if (yak < 0)
+                                    {
+                                        yak = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Yak", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 2)
+                                {
+                                    int hups = rnd.Next(100, 501);
+                                    food -= hups;
+                                    if (food < 0)
+                                    {
+                                        food = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Punds Of Food", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 3)
+                                {
+                                    int hups = rnd.Next(1, 4);
+                                    clothes -= hups;
+                                    if (clothes < 0)
+                                    {
+                                        clothes = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Sets Of Clothes", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 4)
+                                {
+                                    int hups = rnd.Next(15, 101);
+                                    ammo -= hups;
+                                    if (ammo < 0)
+                                    {
+                                        ammo = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Bullets", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 5)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    axle -= hups;
+                                    if (axle < 0)
+                                    {
+                                        axle = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Axle(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 6)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    wheel -= hups;
+                                    if (wheel < 0)
+                                    {
+                                        wheel = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Wheel(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                                if (lussk == 7)
+                                {
+                                    int hups = rnd.Next(1, 3);
+                                    tongue -= hups;
+                                    if (tongue < 0)
+                                    {
+                                        tongue = 0;
+                                    }
+                                    Console.WriteLine("You Lost {0} Wagon Tongue(s)", hups);
+                                    Console.WriteLine("Press 'Enter' To Continue");
+                                    Console.ReadLine();
+                                }
+                            }
+                            else if (win != 1)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You Crossed The River Safly");
+                                Console.WriteLine("Press 'Enter' To Continue");
+                                Console.ReadLine();
+                            }
+                            ff = true;
+                            landmark = 9;
+                            while (ff == true && win != 1)
+                            {
+                                string stop;
+                                win = WagonFail(yak);
+                                yak = SnakeBite(yak);
+                                wheel = WheelBreak(wheel);
+                                if (wheel < 0) { wheel = 0; win = 1; }
+                                axle = AxleBreak(axle);
+                                if (axle < 0) { axle = 0; win = 1; }
+                                tongue = TongueBreak(tongue);
+                                if (tongue < 0) { tongue = 0; win = 1; }
+                                fooddeath = Death(healthref, fooddeath);
+                                fooddeath = Death(healthref, fooddeath);
+                                if (fooddeath == 0)
+                                {
+                                    win = 1;
+                                }
+                                Console.Clear();
+                                healthref = HealthL(healthref, food, clothes, people);
+                                health = Health(healthref, health);
+                                food = FoodL(food, yak, people);
+                                int bk = 0;
+                                while (bk == 0 && win != 1)
+                                {
+                                    Console.WriteLine("Health: {0}", health);
+                                    Console.WriteLine("Food: {0} Pounds", food);
+                                    Console.WriteLine("Next Landmark: {0} moves", landmark);
+                                    landmark -= 1;
+                                    currentRoom += 1;
+                                    Console.WriteLine("Press 'Enter' To Move");
+                                    Console.WriteLine("1: To Stop");
+                                    stop = Console.ReadLine();
+                                    if (stop == "")
+                                    {
+                                        bk = 1;
+                                    }
+                                    int mk = 0;
+
+                                    if (stop == "1")
+                                    {
+                                        while (mk == 0 && win != 1)
+                                        {
+                                            stop = Stopping(stop);
+                                            if (stop == "1")
+                                            {
+                                                mk = 1;
+                                            }
+                                            if (stop == "2")
+                                            {
+                                                string oio = LSupplies(yak, food, clothes, ammo, wheel, axle, tongue);
+                                            }
+                                            if (stop == "3")
+                                            {
+                                                food = Hunting(food, ammo);
+                                                ammo = AmmoL(ammo);
+                                            }
+                                            if (landmark == 0)
+                                            {
+                                                bk = 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (landmark == 0)
+                                {
+                                    ff = false;
+                                }
+
+                            }
+                            if (win != 1)
+                            {
+                                win = 2;
+                            }
+
+                        }
+                        #endregion
+                    }
+                } while (win == 0);
+                Console.Clear();
+                if (win == 1)
+                {
+                    Console.WriteLine("You Lose");
+                    if (food == 0)
+                    {
+                        Console.WriteLine("You Starved To Death");
+                        Console.WriteLine("Press Enter To End Game");
+                        Console.ReadLine();
+                    }
+                    if (yak == 0 || wheel == 0 || axle == 0 || tongue == 0)
+                    {
+                        Console.WriteLine("You Couldn't Pull Your Wagon");
+                        Console.WriteLine("Press Enter To End Game");
+                        Console.ReadLine();
+                    }
+                }
+                if (win == 2)
+                {
+                    Console.WriteLine("You Made It Through The Oregon Trail");
+                    Console.WriteLine("Press Enter To Close Game");
+                    Console.ReadLine();
+                }
             }
+            #endregion
         }
         #region Start/Job
         public static int Start(int a)
@@ -1140,7 +4363,7 @@ namespace Final_Exam
         #region HealthLoss
         public static int HealthL(int healthref, double food, int clothes, int people)
         {
-            if (food > 0 && healthref != 10)
+            if (food > 10 && healthref != 10)
             {
                 healthref += 1;
                 if (healthref > 10)
@@ -1148,21 +4371,22 @@ namespace Final_Exam
                     healthref = 10;
                 }
             }
-            if (clothes >= people && healthref != 10)
-            {
-                healthref += 1;
-                if (healthref > 10)
-                {
-                    healthref = 10;
-                }
-            }
+
             if (food == 0)
             {
                 healthref -= 1;
+                if (healthref < 0)
+                {
+                    healthref = 0;
+                }
             }
             if (clothes < people)
             {
                 healthref -= 1;
+                if (healthref < 0)
+                {
+                    healthref = 0;
+                }
             }
             return healthref;
         }
@@ -1195,6 +4419,7 @@ namespace Final_Exam
                 Console.WriteLine("2: Check Supplies");
                 Console.WriteLine("3: Hunt");
                 a = Console.ReadLine();
+                Console.Clear();
                 if (a == "1" || a == "2" || a == "3")
                 {
                     b = 1;
@@ -1296,6 +4521,257 @@ namespace Final_Exam
             return ammo;
         }
         #endregion
+        #region Death
+        public static int Death(int healthref, int fooddeath)
+        {
+            if (healthref == 0)
+            {
+                fooddeath -= 1;
+            }
+            if (healthref > 0)
+            {
+                fooddeath += 1;
+                if (fooddeath > 3)
+                {
+                    fooddeath = 3;
+                }
+            }
+            return fooddeath;
+            //fooddeath = Death(healthref, fooddeath)
+            //if (fooddeath == 0)
+            //{
+            //    win = 1;
+            //}
+        }
+        #endregion
+        #region WagonFail
+        public static int WagonFail (int yak)
+        {
+            int win = 0;
+            if (yak == 0)
+            {
+                win = 1;
+                return win;
+            }
+            return win;
+            //win = WagonFail(yak);
+        }
+        #endregion
+        #region SnakeBite
+        public static int SnakeBite(int yak)
+        {
+            Random rnd = new Random();
+            int snake = rnd.Next(1, 21);
+            if (snake == 17)
+            {
+                yak -= 1;
+                Console.Clear();
+                Console.WriteLine("One Of Your Yak's Got Bit By A Snake, It Died");
+                Console.WriteLine("Press 'Enter' To Continue");
+                Console.ReadLine();
+                return yak;
+            }
+            return yak;
+        }
+        #endregion
+        #region Wheel Break
+        public static int WheelBreak(int wheel)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("A Wheel Broke Off Your Wagon");
+                wheel -= wheel;
+                if (wheel >= 0)
+                {
+                    Console.WriteLine("You Used A Spare Wheel To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return wheel;
+                }
+                if (wheel < 0)
+                {
+                    Console.WriteLine("You Don't Have A Spare Wheel To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return wheel;
+                }
+            }
+            return wheel;
+            //wheel = WheelBreak(wheel)
+            //if (wheel < 0) { wheel = 0; win = 1; }
+        }
+        #endregion
+        #region Axle Break
+        public static int AxleBreak(int axle)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("An Axle Broke Off Your Wagon");
+                axle -= axle;
+                if (axle >= 0)
+                {
+                    Console.WriteLine("You Used A Spare Axle To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return axle;
+                }
+                if (axle < 0)
+                {
+                    Console.WriteLine("You Don't Have A Spare Axle To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return axle;
+                }
+            }
+            return axle;
+            //axle = AxleBreak(axle)
+            //if (axle < 0) { axle = 0; win = 1; }
+        }
+        #endregion
+        #region Tongue Break
+        public static int TongueBreak(int tongue)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("A Tongue Broke Off Your Wagon");
+                tongue -= tongue;
+                if (tongue >= 0)
+                {
+                    Console.WriteLine("You Used A Spare Tongue To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return tongue;
+                }
+                if (tongue < 0)
+                {
+                    Console.WriteLine("You Don't Have A Spare Tongue To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return tongue;
+                }
+            }
+            return tongue;
+            //tongue = TongueBreak(tongue)
+            //if (tongue < 0) { tongue = 0; win = 1; }
+        }
+        #endregion
+        #region Sail Break
+        public static int SailBreak(int sailpatch)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("The Current Kicked Up And Your Sail Broke");
+                sailpatch -= sailpatch;
+                if (sailpatch >= 0)
+                {
+                    Console.WriteLine("You Used A Sail Patch To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return sailpatch;
+                }
+                if (sailpatch < 0)
+                {
+                    Console.WriteLine("You Don't Have A Sail Patch To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return sailpatch;
+                }
+            }
+            return sailpatch;
+            //sailpatch = SailBreak(sailpatch)
+            //if (sailpatch < 0) { sailpatch = 0; win = 1; }
+        }
+        #endregion
+        #region Hull Break
+        public static int HullBreak(int hullpatch)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("The Current Kicked Up And Your Hull Broke");
+                hullpatch -= hullpatch;
+                if (hullpatch >= 0)
+                {
+                    Console.WriteLine("You Used A Hull Patch To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return hullpatch;
+                }
+                if (hullpatch < 0)
+                {
+                    Console.WriteLine("You Don't Have A Hull Patch To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return hullpatch;
+                }
+            }
+            return hullpatch;
+            //hullpatch = HullBreak(sailpatch)
+            //if (hullpatch < 0) { hullpatch = 0; win = 1; }
+        }
+        #endregion
+        #region RockSlide
+        public static double RockSlide(double food)
+        {
+            Random rnd = new Random();
+            int slide = rnd.Next(1, 6);
+            if (slide == 4)
+            {
+                Console.Clear();
+                Console.WriteLine("You Lost Half Your Food In A Rock Slide");
+                Console.WriteLine("Press 'Enter' To Continue");
+                Console.ReadLine();
+                food = food / 2;
+                return food;
+            }
+            return food;
+            //food = Rockslide(food);
+        }
+        #endregion
+        #region Hull Break
+        public static int MastBreak(int mastpatch)
+        {
+            Random rnd = new Random();
+            int wbreak = rnd.Next(1, 21);
+            if (wbreak == 17)
+            {
+                Console.Clear();
+                Console.WriteLine("The Current Kicked Up And Your Hull Broke");
+                mastpatch -= mastpatch;
+                if (mastpatch >= 0)
+                {
+                    Console.WriteLine("You Used A Mast Patch To Repair It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.ReadLine();
+                    return mastpatch;
+                }
+                if (mastpatch < 0)
+                {
+                    Console.WriteLine("You Don't Have A Mast Patch To Fix It");
+                    Console.WriteLine("Press 'Enter' To Continue");
+                    Console.WriteLine();
+                    return mastpatch;
+                }
+            }
+            return mastpatch;
+            //mastpatch = MastBreak(mastpatch);
+            //if (mastpatch < 0) { mastpatch = 0; win = 1; }
+        }
+        #endregion
         #region Land Supplies
         public static string LSupplies(int yak, double food, int clothes, int ammo, int wheel, int axle, int tongue)
         {
@@ -1343,5 +4819,3 @@ namespace Final_Exam
         #endregion
     }
 }
-    
-
